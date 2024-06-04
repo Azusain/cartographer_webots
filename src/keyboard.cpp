@@ -14,7 +14,10 @@ const std::string ROBOT_NAME = "robot/";
 double speeds[NMOTORS]={0.0,0.0};          
 float linear_temp=0, angular_temp=0;        
 
-static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};
+static const char *motorNames[NMOTORS] ={
+    "left_motor", 
+    "right_motor"
+};
 
 static int controllerCount;
 static std::vector<std::string> controllerList; 
@@ -38,14 +41,15 @@ void updateSpeed() {
     speeds[1]=0;
 }
 
+// list all the available controllers, (however we obly use keyboard as our controller).
 void controllerNameCallback(const std_msgs::String::ConstPtr &name) { 
     controllerCount++; 
     controllerList.push_back(name->data);
     ROS_INFO("Controller #%d: %s.", controllerCount, controllerList.back().c_str());
 }
 
-void keyboardDataCallback(const webots_ros::Int32Stamped::ConstPtr &value)
-{
+// these data is to be sent to the cartographer node.
+void keyboardDataCallback(const webots_ros::Int32Stamped::ConstPtr &value) {
     switch (value->data){
         // LEFT.
         case 314:
@@ -73,17 +77,17 @@ void keyboardDataCallback(const webots_ros::Int32Stamped::ConstPtr &value)
     }
 }
 
-void cmdvelDataCallback(const geometry_msgs::Twist::ConstPtr &value)
-{
-    
+void cmdvelDataCallback(const geometry_msgs::Twist::ConstPtr &value) {
     angular_temp = value->angular.z ;
     linear_temp = value->linear.x ;
-    
 }
 
 void quit(int sig) {
     w.Quit(n);
 }
+
+// Get messages from webots controller or navigation node.
+// Then send data to cartographer broadcaster node.
 int main(int argc, char **argv) {
     setlocale(LC_CTYPE,"zh_CN.utf8");
     std::string controllerName;
@@ -96,6 +100,10 @@ int main(int argc, char **argv) {
     w.InitMotors(n, motorNames, NMOTORS);
     
     ros::Subscriber cmdvelSub;
+    // It should be noted that:
+    // we will get velocity data from the /cmd_vel topic, if navigation is enabled, we will get rviz data from this topic,
+    // otherwise we will get out keyboard data. 
+    // Then /vel is used for pushing data to the cartographer broadcaster node.
     cmdvelSub = n->subscribe("/cmd_vel",1,cmdvelDataCallback);
     pub_speed = n->advertise<nav_msgs::Odometry>("/vel",1);
     if(!w.EnableService(n, "keyboard")){

@@ -30,7 +30,8 @@ void goalCallback(const cartographer_webots::Goalname::ConstPtr &value){
     }
 }
 
-
+// This node get the 'set_goal' command from rviz and then send it to the internal navigation node,
+// then the navigation node generates the velocity data and send it to the 'demo_2nav_move' node.
 int main(int argc, char **argv) {
     // create a node named 'robot' on ROS network
     ros::init(argc, argv, "robot_set_goal");

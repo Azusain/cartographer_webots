@@ -47,8 +47,8 @@ void broadcastTransform(){
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link", "robot/Sick_LMS_291"));
 }
 
-void send_odom_data()
-{
+// Send odom data to the internal Cartographer calcuuulation node.
+void send_odom_data() {
     nav_msgs::Odometry odom;
     odom.header.frame_id = "odom";
     odom.child_frame_id = "base_link";
@@ -87,18 +87,21 @@ void inertial_unitCallback(const sensor_msgs::Imu::ConstPtr &values){
     broadcastTransform();
 }
 
+// after we get vel data from the keyboard node, we can utilize it for generating the odom data
+// which is send to the internal cartographer node then.
 void velCallback(const nav_msgs::Odometry::ConstPtr &value){
     liner_speed = value->twist.twist.linear.x;
     angular_speed = value->twist.twist.angular.z;
     send_odom_data();
 }
 
+
 int main(int argc, char **argv) {
     setlocale(LC_ALL, "zh_CN.utf8"); 
     std::string controllerName;
     ros::init(argc, argv, "robot_init", ros::init_options::AnonymousName);
     n = new ros::NodeHandle;
-    // 截取退出信号
+
     signal(SIGINT, quit);
 
     ros::Subscriber nameSub = n->subscribe("model_name", 100, controllerNameCallback);

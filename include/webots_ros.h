@@ -1,10 +1,3 @@
-/************************************************* 
-Copyright:Webots_ros API
-Author: 锡城筱凯
-Date:2021-11-07 
-Blog：https://blog.csdn.net/xiaokai1999
-Description:Webots_ros官方库的整合库，简便易用
-**************************************************/  
 #ifndef _WEBOTS_ROS_H
 #define _WEBOTS_ROS_H
 
