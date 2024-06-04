@@ -1,19 +1,19 @@
 
 <launch>
-  <include file="$(find webots_demo)/launch/webots.launch" />
+  <include file="$(find cartographer_webots)/launch/webots.launch" />
 
-  <node name="keyboard" pkg="webots_demo" type="keyboard"/>
+  <node name="keyboard" pkg="cartographer_webots" type="keyboard"/>
 
-  <node name="robot_broadcaster" pkg="webots_demo" type="robot_broadcaster_cartographer" />
+  <node name="robot_broadcaster" pkg="cartographer_webots" type="robot_broadcaster_cartographer" />
 
   <!-- open rviz -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find webots_demo)/rviz/robot_cartographer.rviz" /> 
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find cartographer_webots)/rviz/robot_cartographer.rviz" /> 
 
   <!-- Cartographer  -->
   <param name="/use_sim_time" value="true" />
   <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
-          -configuration_directory $(find webots_demo)/config/cartographer_config
+          -configuration_directory $(find cartographer_webots)/config/cartographer_config
           -configuration_basename revo_lds.lua"
       output="screen" >
     <remap from="scan" to="robot/Sick_LMS_291/laser_scan/layer0" />
@@ -24,11 +24,11 @@
 
   <!-- move_base 导航> -->
   <node pkg="move_base" type="move_base" respawn="true" name="move_base" output="screen">
-    <rosparam file="$(find webots_demo)/config/base/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find webots_demo)/config/base/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find webots_demo)/config/base/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find webots_demo)/config/base/global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find webots_demo)/config/base/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find cartographer_webots)/config/base/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find cartographer_webots)/config/base/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find cartographer_webots)/config/base/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find cartographer_webots)/config/base/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find cartographer_webots)/config/base/base_local_planner_params.yaml" command="load" />
     <remap from="cmd_vel" to="cmd_vel"/>
     <remap from="odom" to="robot/odom"/>
     <remap from="scan" to="robot/Sick_LMS_291/laser_scan/layer0"/>

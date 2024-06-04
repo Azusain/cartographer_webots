@@ -6,7 +6,7 @@ Blog：https://blog.csdn.net/xiaokai1999
 Description:Webots Demo 机器人通过程序设定目标点
 **************************************************/  
 #include "string.h"
-#include "webots_demo/Goalname.h" 
+#include "cartographer_webots/Goalname.h" 
 #include "geometry_msgs/PoseStamped.h"
 #include "ros/ros.h"
 using namespace std;
@@ -14,7 +14,7 @@ using namespace std;
 ros::NodeHandle *n;
 ros::Publisher pub_goal;            // 发布/move_base_simple/goal 
 
-void goalCallback(const webots_demo::Goalname::ConstPtr &value){
+void goalCallback(const cartographer_webots::Goalname::ConstPtr &value){
     int isture=0;
     string goal_name = value->goal_name;
     geometry_msgs::PoseStamped target_pose;
