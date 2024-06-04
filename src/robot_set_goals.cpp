@@ -1,10 +1,3 @@
-/************************************************* 
-Copyright:Webots Demo
-Author: 锡城筱凯
-Date:2021-06-30 
-Blog：https://blog.csdn.net/xiaokai1999
-Description:Webots Demo 机器人通过程序设定目标点
-**************************************************/  
 #include "string.h"
 #include "cartographer_webots/Goalname.h" 
 #include "geometry_msgs/PoseStamped.h"
@@ -12,7 +5,7 @@ Description:Webots Demo 机器人通过程序设定目标点
 using namespace std;
  
 ros::NodeHandle *n;
-ros::Publisher pub_goal;            // 发布/move_base_simple/goal 
+ros::Publisher pub_goal;          
 
 void goalCallback(const cartographer_webots::Goalname::ConstPtr &value){
     int isture=0;
@@ -20,7 +13,6 @@ void goalCallback(const cartographer_webots::Goalname::ConstPtr &value){
     geometry_msgs::PoseStamped target_pose;
     target_pose.header.seq = 1;
     target_pose.header.frame_id = "map";
-    // 这边都是先在rviz中获取的位置和位姿
     if (goal_name == "bedroom"){
         target_pose.pose.position.x = -1.3;
         target_pose.pose.position.y = -2.5;

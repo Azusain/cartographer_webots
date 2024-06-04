@@ -14,28 +14,20 @@ const std::string ROBOT_NAME = "robot/";
 double speeds[NMOTORS]={0.0,0.0};          
 float linear_temp=0, angular_temp=0;        
 
-static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};// 控制位置电机名称
+static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};
 
 static int controllerCount;
 static std::vector<std::string> controllerList; 
 
-ros::Publisher pub_speed;                   // 发布 /vel
+ros::Publisher pub_speed;                   
 Webots w = Webots(TIME_STEP,ROBOT_NAME);
 
-/*******************************************************
-* Function name ：updateSpeed
-* Description   ：将速度请求以set_float的形式发送给set_velocity_srv
-* Parameter     ：无
-* Return        ：无
-**********************************************************/
 void updateSpeed() {   
     nav_msgs::Odometry speed_data;
-    //两轮之间的距离
     float L = 0.6;
     speeds[0]  = 10.0*(2.0*linear_temp - L*angular_temp)/2.0;
     speeds[1]  = 10.0*(2.0*linear_temp + L*angular_temp)/2.0;
     for (int i = 0; i < NMOTORS; ++i) {
-        // 更新速度
         w.SetMotorsVelocity(n, motorNames[i], -speeds[i]);
     }
     speed_data.header.stamp = ros::Time::now();
@@ -46,47 +38,32 @@ void updateSpeed() {
     speeds[1]=0;
 }
 
-/*******************************************************
-* Function name ：controllerNameCallback
-* Description   ：控制器名回调函数，获取当前ROS存在的机器人控制器
-* Parameter     ：
-        @name   控制器名
-* Return        ：无
-**********************************************************/
 void controllerNameCallback(const std_msgs::String::ConstPtr &name) { 
     controllerCount++; 
-    //将控制器名加入到列表中
     controllerList.push_back(name->data);
     ROS_INFO("Controller #%d: %s.", controllerCount, controllerList.back().c_str());
 }
 
-/*******************************************************
-* Function name ：键盘返回函数
-* Description   ：当键盘动作，就会进入此函数内
-* Parameter     ：
-        @value   返回的值
-* Return        ：无
-**********************************************************/
 void keyboardDataCallback(const webots_ros::Int32Stamped::ConstPtr &value)
 {
     switch (value->data){
-        // 左转
+        // LEFT.
         case 314:
             angular_temp-=0.1;
             break;
-        // 前进
+        // FORWARD.
         case 315:
             linear_temp += 0.1;
             break;
-        // 右转
+        // RIGHT.
         case 316:
             angular_temp+=0.1;
             break;
-        // 后退
+        // BACKWARD.
         case 317:
             linear_temp-=0.1;
             break;
-        // 停止
+        // STOP.
         case 32:
             linear_temp = 0;
             angular_temp = 0;
@@ -95,41 +72,25 @@ void keyboardDataCallback(const webots_ros::Int32Stamped::ConstPtr &value)
             break;
     }
 }
-/*******************************************************
-* Function name ：cmdvel返回函数
-* Description   ：获取导航返回的角速度和线速度
-* Parameter     ：
-        @value   返回的值
-* Return        ：无
-**********************************************************/
+
 void cmdvelDataCallback(const geometry_msgs::Twist::ConstPtr &value)
 {
     
-    angular_temp = value->angular.z ;//获取/cmd_vel的角速度,rad/s
-    linear_temp = value->linear.x ;//获取/cmd_vel的线速度.m/s  
+    angular_temp = value->angular.z ;
+    linear_temp = value->linear.x ;
     
 }
-/*******************************************************
-* Function name ：quit
-* Description   ：退出函数
-* Parameter     ：
-        @sig   信号
-* Return        ：无
-**********************************************************/
+
 void quit(int sig) {
     w.Quit(n);
 }
 int main(int argc, char **argv) {
-    //设置中文
     setlocale(LC_CTYPE,"zh_CN.utf8");
     std::string controllerName;
-    // 在ROS网络中创建一个名为robot_init的节点
     ros::init(argc, argv, "robot_init", ros::init_options::AnonymousName);
     n = new ros::NodeHandle;
-    // 截取退出信号
     signal(SIGINT, quit);
 
-    // 订阅webots中所有可用的model_name
     ros::Subscriber nameSub = n->subscribe("model_name", 10, controllerNameCallback);
     w.Init(n, nameSub, controllerCount, controllerList);
     w.InitMotors(n, motorNames, NMOTORS);
@@ -141,13 +102,6 @@ int main(int argc, char **argv) {
         ros::Subscriber keyboardSub;
         keyboardSub = n->subscribe(std::string(ROBOT_NAME)+std::string("keyboard/key"),1,keyboardDataCallback);
         while (keyboardSub.getNumPublishers() == 0) {}
-        ROS_INFO("Keyboard enabled.");
-        ROS_INFO("控制方向：");
-        ROS_INFO("  ↑  ");
-        ROS_INFO("← ↓ →");
-        ROS_INFO("刹车：空格键");
-        ROS_INFO("Use the arrows in Webots window to move the robot.");
-        ROS_INFO("Press the End key to stop the node.");
         while (ros::ok()) {   
             ros::spinOnce();
             updateSpeed();

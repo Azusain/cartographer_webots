@@ -11,7 +11,7 @@ const float MAX_SPEED = 2.0;
 const std::string ROBOT_NAME = "robot/";    
 double speeds[NMOTORS]={0.0,0.0};           
 
-static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};// 控制位置电机名称
+static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};
 
 static int controllerCount;
 static std::vector<std::string> controllerList; 
@@ -28,7 +28,7 @@ void updateSpeed() {
 // catch names of the controllers availables on ROS network
 void controllerNameCallback(const std_msgs::String::ConstPtr &name) { 
     controllerCount++; 
-    controllerList.push_back(name->data);//将控制器名加入到列表中
+    controllerList.push_back(name->data);
     ROS_INFO("Controller #%d: %s.", controllerCount, controllerList.back().c_str());
 }
 
