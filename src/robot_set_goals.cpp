@@ -13,13 +13,6 @@ void goalCallback(const cartographer_webots::Goalname::ConstPtr &value){
     geometry_msgs::PoseStamped target_pose;
     target_pose.header.seq = 1;
     target_pose.header.frame_id = "map";
-    if (goal_name == "bedroom"){
-        target_pose.pose.position.x = -1.3;
-        target_pose.pose.position.y = -2.5;
-        target_pose.pose.orientation.z = 0.0016;
-        target_pose.pose.orientation.w = -0.6538;
-        isture = 1;
-    }
     if (isture){
         target_pose.header.stamp = ros::Time::now();
         pub_goal.publish(target_pose);
