@@ -158,17 +158,9 @@ add_executable(velocity_keyboard_v3 src/velocity_keyboard_v3.cpp)
 add_dependencies(velocity_keyboard_v3 webots_ros_generate_messages_cpp)
 target_link_libraries(velocity_keyboard_v3	${catkin_LIBRARIES})
 
-add_executable(velocity_joy src/velocity_joy.cpp)
-add_dependencies(velocity_joy webots_ros_generate_messages_cpp)
-target_link_libraries(velocity_joy	${catkin_LIBRARIES})
-
 add_executable(robot_broadcaster_cartographer src/robot_broadcaster_cartographer.cpp)
 add_dependencies(robot_broadcaster_cartographer webots_ros_generate_messages_cpp)
 target_link_libraries(robot_broadcaster_cartographer	${catkin_LIBRARIES})
-
-add_executable(robot_broadcaster_gmapping src/robot_broadcaster_gmapping.cpp)
-add_dependencies(robot_broadcaster_gmapping webots_ros_generate_messages_cpp)
-target_link_libraries(robot_broadcaster_gmapping	${catkin_LIBRARIES})
 
 add_executable(demo_2dnav_move src/demo_2dnav_move.cpp)
 add_dependencies(demo_2dnav_move webots_ros_generate_messages_cpp)
@@ -177,11 +169,3 @@ target_link_libraries(demo_2dnav_move	${catkin_LIBRARIES})
 add_executable(robot_set_goals src/robot_set_goals.cpp)
 add_dependencies(robot_set_goals webots_ros_generate_messages_cpp)
 target_link_libraries(robot_set_goals	${catkin_LIBRARIES})
-
-
-
-## Instructions for keyboard_teleop node
-
-#############
-## Install ##
-#############
