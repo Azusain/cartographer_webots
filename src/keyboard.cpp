@@ -1,24 +1,18 @@
-/************************************************* 
-Copyright:Webots Demo
-Author: 锡城筱凯
-Date:2021-06-30 
-Blog：https://blog.csdn.net/xiaokai1999
-Change: 2021-11-07
-Description:Webots Demo 通过webots控制机器人移动
-**************************************************/  
+
 #include <signal.h>
 #include <locale.h> 
 #include <webots_ros.h>
 #include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Twist.h>
 
 ros::NodeHandle *n;
 
-const int TIME_STEP = 32;                   // 时钟
-const int NMOTORS = 2;                      // 电机数量
-const float MAX_SPEED = 2.0;                // 电机最大速度
-const std::string ROBOT_NAME = "robot/";    // ROBOT名称 
-double speeds[NMOTORS]={0.0,0.0};           // 电机速度值 0.0～10.0
-float linear_temp=0, angular_temp=0;        // 暂存的线速度和角速度
+const int TIME_STEP = 32;                 
+const int NMOTORS = 2;                     
+const float MAX_SPEED = 2.0;                
+const std::string ROBOT_NAME = "robot/";   
+double speeds[NMOTORS]={0.0,0.0};          
+float linear_temp=0, angular_temp=0;        
 
 static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};// 控制位置电机名称
 
@@ -101,7 +95,20 @@ void keyboardDataCallback(const webots_ros::Int32Stamped::ConstPtr &value)
             break;
     }
 }
-
+/*******************************************************
+* Function name ：cmdvel返回函数
+* Description   ：获取导航返回的角速度和线速度
+* Parameter     ：
+        @value   返回的值
+* Return        ：无
+**********************************************************/
+void cmdvelDataCallback(const geometry_msgs::Twist::ConstPtr &value)
+{
+    
+    angular_temp = value->angular.z ;//获取/cmd_vel的角速度,rad/s
+    linear_temp = value->linear.x ;//获取/cmd_vel的线速度.m/s  
+    
+}
 /*******************************************************
 * Function name ：quit
 * Description   ：退出函数
@@ -126,6 +133,9 @@ int main(int argc, char **argv) {
     ros::Subscriber nameSub = n->subscribe("model_name", 10, controllerNameCallback);
     w.Init(n, nameSub, controllerCount, controllerList);
     w.InitMotors(n, motorNames, NMOTORS);
+    
+    ros::Subscriber cmdvelSub;
+    cmdvelSub = n->subscribe("/cmd_vel",1,cmdvelDataCallback);
     pub_speed = n->advertise<nav_msgs::Odometry>("/vel",1);
     if(!w.EnableService(n, "keyboard")){
         ros::Subscriber keyboardSub;

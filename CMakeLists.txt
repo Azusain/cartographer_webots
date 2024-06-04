@@ -150,13 +150,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(velocity_keyboard_v2 src/velocity_keyboard_v2.cpp)
-add_dependencies(velocity_keyboard_v2 webots_ros_generate_messages_cpp)
-target_link_libraries(velocity_keyboard_v2	${catkin_LIBRARIES})
-
-add_executable(velocity_keyboard_v3 src/velocity_keyboard_v3.cpp)
-add_dependencies(velocity_keyboard_v3 webots_ros_generate_messages_cpp)
-target_link_libraries(velocity_keyboard_v3	${catkin_LIBRARIES})
+add_executable(keyboard src/keyboard.cpp)
+add_dependencies(keyboard webots_ros_generate_messages_cpp)
+target_link_libraries(keyboard	${catkin_LIBRARIES})
 
 add_executable(robot_broadcaster_cartographer src/robot_broadcaster_cartographer.cpp)
 add_dependencies(robot_broadcaster_cartographer webots_ros_generate_messages_cpp)
