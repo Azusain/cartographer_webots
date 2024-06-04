@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "linux",
+            "includePath": [
+                "/usr/local//include/**",
+                "/usr/local/webots/include/**",
+                "/opt/ros/noetic/include/**",
+                "/home/azusaing/catkin_ws/devel/include/**",
+                "${workspaceFolder}/include/**",
+            ],
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}
